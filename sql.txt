@@ -1,0 +1,121 @@
+set-location "C:\Program Files\MySQL\MySQL Server 8.0\bin"
+
+./mysql.exe -u raka -p
+
+Show databases;
+
+create database sekolahku;
+
+create table users(
+id int not null auto_increment,
+username varchar(50) default null,
+email varchar(50) not null unique,
+password varchar(50) not null unique,
+created_at timestamp default current_timestamp,
+updated_at timestamp default current_timestamp on update current_timestamp,
+primary key (id)
+);
+
+describe users;
+
+insert into users (username, email, password) values ('Andi', 'andi@andi.com', 12345);
+
+insert into users (username, email, password) values ('Budi', 'budi@budi.com', 67890);
+
+insert into users (username, email, password) values ('Caca', 'caca@caca.com', 'abcde');
+
+insert into users (username, email, password) values ('Deni', 'deni@deni.com', 'fghij');
+
+insert into users (username, email, password) values ('Euis', 'euis@euis.com', 'klmno');
+
+insert into users (username, email, password) values ('Fafa', 'fafa@fafa.com', 'pqrst');
+
+select * from users;
+
+create table courses(
+id int not null auto_increment,
+course varchar(50) default null,
+mentor varchar(50) not null,
+title varchar(50) not null,
+primary key (id)
+);
+
+insert into courses (course, mentor, title) values ('C++', 'Ari', 'Dr.');
+
+insert into courses (course, mentor, title) values ('C#', 'Ari', 'Dr.');
+
+insert into courses (course, mentor, title) values ('C#', 'Ari', 'Dr.');
+
+insert into courses (course, mentor, title) values ('CSS', 'Cania', 'S.Kom');
+
+insert into courses (course, mentor, title) values ('HTML', 'Cania', 'S.Kom');
+
+insert into courses (course, mentor, title) values ('Javascript', 'Cania', 'S.Kom');
+
+insert into courses (course, mentor, title) values ('Python', 'Barry', 'S.T.');
+
+insert into courses (course, mentor, title) values ('Micropython', 'Barry', 'S.T.');
+
+insert into courses (course, mentor, title) values ('Java', 'Darren', 'M.T.');
+
+insert into courses (course, mentor, title) values ('Ruby', 'Darren', 'M.T.');
+
+
+select * from courses;
+
+create table userCourses(
+id_user int(11) default NULL,
+id_course int(11) default null,
+primary key('id_user')
+);
+
+create table userCourse(
+id int not null auto_increment,
+id_user int(11) default NULL,
+id_course int(11) default null,
+PRIMARY KEY (`id`)
+);
+
+create table usercourses
+(  id_user int(11),
+    id_course int(11));
+
+INSERT INTO usercourses(`id_user`, `id_course`) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(2, 4),
+(2, 5),
+(2, 6),
+(3, 7),
+(3, 8),
+(3, 9),
+(4, 1),
+(4, 3),
+(4, 5),
+(5, 2),
+(5, 4),
+(5, 6),
+(6, 7),
+(6, 8),
+(6, 9);
+
+select courses.id, users.username, courses.course, courses.mentor, courses.title
+FROM ((courses inner join usercourses on usercourses.id_user = courses.id)
+INNER JOIN users on courses.id = users.id);
+
+select courses.id, users.username, courses.course, courses.mentor, courses.title
+FROM ((courses inner join usercourses on usercourses.id_user = courses.id)
+INNER JOIN users on courses.id = users.id) where title = 'S.Kom' or title = 'S.T.'
+
+select courses.course, courses.mentor, courses.title, count(*)
+FROM ((courses inner join usercourses on usercourses.id_user = courses.id)
+INNER JOIN users on courses.id = users.id);
+
+select courses.course,courses.mentor,courses.title, count(courses.course) as jumlah_peserta
+from users,courses,userCourses where users.id=userCourses.id_user and courses.id=userCourses.id_course
+group by course,mentor,title having jumlah_peserta>1;
+
+select courses.mentor, count(courses.mentor) as jumlah_peserta, count(courses.mentor)*2000000 as total_fee
+from users,courses,userCourses 
+where users.id=userCourses.id_user  and  courses.id=userCourses.id_course group by mentor having jumlah_peserta>1;
